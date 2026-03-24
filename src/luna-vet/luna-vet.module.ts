@@ -106,6 +106,10 @@ import { DetalleVentaResolver } from './resolvers/detalleVenta/detalle-venta.res
 import { ServicioResolver } from './resolvers/servicio/servicio.resolver';
 import { DetalleServicioVentaResolver } from './resolvers/detalleServicioVenta/detalle-servicio-venta.resolver';
 
+// 7. Dashboard
+import { DashboardService } from './services/dashboard/dashboard.service';
+import { DashboardResolver } from './resolvers/dashboard/dashboard.resolver';
+
 @Module({
   imports: [
     TypeOrmModule.forFeature([
@@ -142,7 +146,11 @@ import { DetalleServicioVentaResolver } from './resolvers/detalleServicioVenta/d
       Venta, 
       DetalleVenta, 
       Servicio, 
-      DetalleServicioVenta
+      DetalleServicioVenta,
+
+      // 7. Dashboard
+      DashboardService, 
+      DashboardResolver
     ])
   ],
   providers: [
@@ -179,7 +187,11 @@ import { DetalleServicioVentaResolver } from './resolvers/detalleServicioVenta/d
     VentaService, VentaResolver, 
     DetalleVentaService, DetalleVentaResolver, 
     ServicioService, ServicioResolver, 
-    DetalleServicioVentaService, DetalleServicioVentaResolver
+    DetalleServicioVentaService, DetalleServicioVentaResolver,
+
+    // 7. Dashboard 
+    DashboardService, 
+    DashboardResolver
   ],
 })
 export class LunaVetModule {}

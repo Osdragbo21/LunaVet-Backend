@@ -20,6 +20,11 @@ type AuditoriaLog {
   usuario_id: Int!
 }
 
+type ChartData {
+  label: String!
+  value: Int!
+}
+
 type Cita {
   consulta: Consulta
   empleado: Empleado!
@@ -226,6 +231,15 @@ input CreateVeterinarioEspecialidadInput {
   especialidad: String!
 }
 
+type DashboardMetrics {
+  citasHoy: Int!
+  graficaCitas: [ChartData!]!
+  graficaEspecies: [ChartData!]!
+  ingresosMes: Float!
+  productosStockBajo: Int!
+  totalPacientesActivos: Int!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -378,6 +392,7 @@ type Query {
   detallesServicioVenta: [DetalleServicioVenta!]!
   detallesVenta: [DetalleVenta!]!
   empleados: [Empleado!]!
+  getAdminDashboardMetrics: DashboardMetrics!
   hospitalizaciones: [Hospitalizacion!]!
   medicamentos: [Medicamento!]!
   movimientosInventario: [MovimientoInventario!]!
