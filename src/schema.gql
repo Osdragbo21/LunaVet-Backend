@@ -28,6 +28,7 @@ type Cita {
   fecha_hora: DateTime!
   id_cita: Int!
   motivo: String!
+  origen_cita: String!
   paciente: Paciente!
   paciente_id: Int!
 }
@@ -71,6 +72,7 @@ input CreateCitaInput {
   estado: String!
   fecha_hora: DateTime!
   motivo: String!
+  origen_cita: String
   paciente_id: Int!
 }
 
@@ -158,7 +160,10 @@ input CreatePacienteInput {
 }
 
 input CreateProductoInput {
+  activo_en_tienda: Boolean
   categoria: String!
+  descripcion: String
+  imagen_url: String
   nombre: String!
   precio_compra: Float!
   precio_venta: Float!
@@ -208,8 +213,11 @@ input CreateVacunaInput {
 
 input CreateVentaInput {
   cliente_id: Int!
-  empleado_id: Int!
+  empleado_id: Int
+  estado_pedido: String
+  hora_recogida_estimada: DateTime
   metodo_pago: String!
+  tipo_venta: String
   total: Float!
 }
 
@@ -339,8 +347,11 @@ type Paciente {
 }
 
 type Producto {
+  activo_en_tienda: Boolean!
   categoria: String!
+  descripcion: String
   id_producto: Int!
+  imagen_url: String
   nombre: String!
   precio_compra: Float!
   precio_venta: Float!
@@ -435,9 +446,12 @@ type Venta {
   cliente_id: Int!
   empleado: Empleado!
   empleado_id: Int!
+  estado_pedido: String!
   fecha_venta: DateTime!
+  hora_recogida_estimada: DateTime
   id_venta: Int!
   metodo_pago: String!
+  tipo_venta: String!
   total: Float!
 }
 

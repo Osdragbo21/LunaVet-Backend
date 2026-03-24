@@ -41,4 +41,16 @@ export class Producto {
     @Field(() => Int)
     @Column()
     stock_minimo: number;
+
+    @Field({ nullable: true })
+    @Column({ nullable: true })
+    imagen_url: string;
+
+    @Field({ nullable: true })
+    @Column({ type: 'text', nullable: true })
+    descripcion: string;
+
+    @Field()
+    @Column({ default: true })
+    activo_en_tienda: boolean;
 }

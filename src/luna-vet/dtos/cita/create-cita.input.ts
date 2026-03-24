@@ -16,4 +16,7 @@ export class CreateCitaInput {
 
     @Field()
     estado: string;
+
+    @Field({ nullable: true }) 
+    origen_cita?: string;
 }

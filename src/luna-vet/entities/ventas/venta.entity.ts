@@ -39,4 +39,16 @@ export class Venta {
     @Field()
     @Column()
     metodo_pago: string;
+
+    @Field({ defaultValue: 'Fisica' })
+    @Column({ default: 'Fisica' })
+    tipo_venta: string; // 'Fisica' o 'Online'
+
+    @Field({ defaultValue: 'Completado' })
+    @Column({ default: 'Completado' })
+    estado_pedido: string; // 'Completado', 'Pendiente de pago', 'Preparando', 'Listo para recoger', 'Entregado'
+
+    @Field({ nullable: true })
+    @Column({ type: 'timestamp', nullable: true })
+    hora_recogida_estimada: Date;
 }

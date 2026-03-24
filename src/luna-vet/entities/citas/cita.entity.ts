@@ -41,8 +41,12 @@ export class Cita {
     @Column()
     estado: string; // Ej: Pendiente, Completada, Cancelada
 
-    // Relación: Una cita puede convertirse en una consulta
+    @Field({ defaultValue: 'Mostrador' })
+    @Column({ default: 'Mostrador' })
+    origen_cita: string; // 'Mostrador' o 'Web'
+
     @Field(() => Consulta, { nullable: true })
     @OneToOne(() => Consulta, (consulta) => consulta.cita)
     consulta?: Consulta;
+
 }

@@ -9,4 +9,7 @@ export class CreateProductoInput {
     @Field(() => Float) precio_compra: number;
     @Field(() => Int) stock_actual: number;
     @Field(() => Int) stock_minimo: number;
+    @Field({ nullable: true }) imagen_url?: string;
+    @Field({ nullable: true }) descripcion?: string;
+    @Field({ nullable: true }) activo_en_tienda?: boolean;
 }
