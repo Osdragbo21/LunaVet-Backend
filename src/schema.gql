@@ -1,0 +1,449 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type ArchivoConsulta {
+  consulta: Consulta!
+  consulta_id: Int!
+  fecha_subida: DateTime!
+  id_archivo: Int!
+  tipo_documento: String!
+  url_archivo: String!
+}
+
+type AuditoriaLog {
+  accion: String!
+  fecha: DateTime!
+  id_log: Int!
+  tabla_afectada: String!
+  usuario: Usuario!
+  usuario_id: Int!
+}
+
+type Cita {
+  consulta: Consulta
+  empleado: Empleado!
+  empleado_id: Int!
+  estado: String!
+  fecha_hora: DateTime!
+  id_cita: Int!
+  motivo: String!
+  paciente: Paciente!
+  paciente_id: Int!
+}
+
+type Cliente {
+  direccion: String!
+  id_cliente: Int!
+  nombre_completo: String!
+  pacientes: [Paciente!]
+  telefono_principal: String!
+  usuario: Usuario!
+  usuario_id: Int!
+}
+
+type Consulta {
+  archivos: [ArchivoConsulta!]
+  cita: Cita!
+  cita_id: Int!
+  diagnostico: String!
+  frecuencia_cardiaca: Int!
+  id_consulta: Int!
+  observaciones: String!
+  peso_actual: Float!
+  temperatura: Float!
+}
+
+input CreateArchivoConsultaInput {
+  consulta_id: Int!
+  tipo_documento: String!
+  url_archivo: String!
+}
+
+input CreateAuditoriaLogInput {
+  accion: String!
+  tabla_afectada: String!
+  usuario_id: Int!
+}
+
+input CreateCitaInput {
+  empleado_id: Int!
+  estado: String!
+  fecha_hora: DateTime!
+  motivo: String!
+  paciente_id: Int!
+}
+
+input CreateClienteInput {
+  direccion: String!
+  nombre_completo: String!
+  telefono_principal: String!
+  usuario_id: Int!
+}
+
+input CreateConsultaInput {
+  cita_id: Int!
+  diagnostico: String!
+  frecuencia_cardiaca: Int!
+  observaciones: String!
+  peso_actual: Float!
+  temperatura: Float!
+}
+
+input CreateDetalleRecetaInput {
+  dosis: String!
+  duracion_dias: Int!
+  frecuencia: String!
+  medicamento_id: Int!
+  receta_id: Int!
+}
+
+input CreateDetalleServicioVentaInput {
+  costo_aplicado: Float!
+  servicio_id: Int!
+  venta_id: Int!
+}
+
+input CreateDetalleVentaInput {
+  cantidad: Int!
+  precio_unitario: Float!
+  producto_id: Int!
+  subtotal: Float!
+  venta_id: Int!
+}
+
+input CreateEmpleadoInput {
+  apellido_materno: String!
+  apellido_paterno: String!
+  email_empleado: String!
+  fecha_contratacion: DateTime!
+  nombre: String!
+  puesto: String!
+  telefono: String!
+  usuario_id: Int!
+}
+
+input CreateHospitalizacionInput {
+  empleado_id: Int!
+  estado: String!
+  fecha_alta: DateTime
+  fecha_ingreso: DateTime!
+  motivo: String!
+  paciente_id: Int!
+}
+
+input CreateMedicamentoInput {
+  nombre: String!
+  presentacion: String!
+  principio_activo: String!
+}
+
+input CreateMovimientoInventarioInput {
+  cantidad: Int!
+  empleado_id: Int!
+  motivo: String!
+  producto_id: Int!
+  tipo_movimiento: String!
+}
+
+input CreatePacienteInput {
+  alergias: String
+  cliente_id: Int!
+  color: String!
+  especie: String!
+  fecha_nacimiento: DateTime!
+  genero: String!
+  nombre: String!
+  raza: String!
+}
+
+input CreateProductoInput {
+  categoria: String!
+  nombre: String!
+  precio_compra: Float!
+  precio_venta: Float!
+  proveedor_id: Int!
+  stock_actual: Int!
+  stock_minimo: Int!
+}
+
+input CreateProveedorInput {
+  contacto_nombre: String!
+  nombre_empresa: String!
+  telefono: String!
+}
+
+input CreateRecetaInput {
+  consulta_id: Int!
+  observaciones_generales: String
+}
+
+input CreateRegistroVacunacionInput {
+  fecha_aplicacion: DateTime!
+  paciente_id: Int!
+  proxima_dosis: DateTime
+  vacuna_id: Int!
+}
+
+input CreateRolInput {
+  descripcion: String
+  nombre: String!
+}
+
+input CreateServicioInput {
+  costo_base: Float!
+  nombre_servicio: String!
+}
+
+input CreateUsuarioInput {
+  password_hash: String!
+  rol_id: Int!
+  username: String!
+}
+
+input CreateVacunaInput {
+  descripcion: String
+  nombre_vacuna: String!
+}
+
+input CreateVentaInput {
+  cliente_id: Int!
+  empleado_id: Int!
+  metodo_pago: String!
+  total: Float!
+}
+
+input CreateVeterinarioEspecialidadInput {
+  empleado_id: Int!
+  especialidad: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type DetalleReceta {
+  dosis: String!
+  duracion_dias: Int!
+  frecuencia: String!
+  id_detalle_receta: Int!
+  medicamento: Medicamento!
+  medicamento_id: Int!
+  receta: Receta!
+  receta_id: Int!
+}
+
+type DetalleServicioVenta {
+  costo_aplicado: Float!
+  id_det_ser: Int!
+  servicio: Servicio!
+  servicio_id: Int!
+  venta: Venta!
+  venta_id: Int!
+}
+
+type DetalleVenta {
+  cantidad: Int!
+  id_detalle: Int!
+  precio_unitario: Float!
+  producto: Producto!
+  producto_id: Int!
+  subtotal: Float!
+  venta: Venta!
+  venta_id: Int!
+}
+
+type Empleado {
+  apellido_materno: String!
+  apellido_paterno: String!
+  email_empleado: String!
+  especialidades: [VeterinarioEspecialidad!]
+  fecha_contratacion: DateTime!
+  id_empleado: Int!
+  nombre: String!
+  puesto: String!
+  telefono: String!
+  usuario: Usuario!
+  usuario_id: Int!
+}
+
+type Hospitalizacion {
+  empleado: Empleado!
+  empleado_id: Int!
+  estado: String!
+  fecha_alta: DateTime
+  fecha_ingreso: DateTime!
+  id_hospitalizacion: Int!
+  motivo: String!
+  paciente: Paciente!
+  paciente_id: Int!
+}
+
+type Medicamento {
+  id_medicamento: Int!
+  nombre: String!
+  presentacion: String!
+  principio_activo: String!
+}
+
+type MovimientoInventario {
+  cantidad: Int!
+  empleado: Empleado!
+  empleado_id: Int!
+  fecha: DateTime!
+  id_movimiento: Int!
+  motivo: String!
+  producto: Producto!
+  producto_id: Int!
+  tipo_movimiento: String!
+}
+
+type Mutation {
+  createArchivoConsulta(createInput: CreateArchivoConsultaInput!): ArchivoConsulta!
+  createAuditoriaLog(createInput: CreateAuditoriaLogInput!): AuditoriaLog!
+  createCita(createCitaInput: CreateCitaInput!): Cita!
+  createCliente(createClienteInput: CreateClienteInput!): Cliente!
+  createConsulta(createConsultaInput: CreateConsultaInput!): Consulta!
+  createDetalleReceta(createInput: CreateDetalleRecetaInput!): DetalleReceta!
+  createDetalleServicioVenta(createInput: CreateDetalleServicioVentaInput!): DetalleServicioVenta!
+  createDetalleVenta(createInput: CreateDetalleVentaInput!): DetalleVenta!
+  createEmpleado(createEmpleadoInput: CreateEmpleadoInput!): Empleado!
+  createHospitalizacion(createInput: CreateHospitalizacionInput!): Hospitalizacion!
+  createMedicamento(createInput: CreateMedicamentoInput!): Medicamento!
+  createMovimientoInventario(createInput: CreateMovimientoInventarioInput!): MovimientoInventario!
+  createPaciente(createPacienteInput: CreatePacienteInput!): Paciente!
+  createProducto(createInput: CreateProductoInput!): Producto!
+  createProveedor(createInput: CreateProveedorInput!): Proveedor!
+  createReceta(createInput: CreateRecetaInput!): Receta!
+  createRegistroVacunacion(createInput: CreateRegistroVacunacionInput!): RegistroVacunacion!
+  createRol(createRolInput: CreateRolInput!): Rol!
+  createServicio(createInput: CreateServicioInput!): Servicio!
+  createUsuario(createUsuarioInput: CreateUsuarioInput!): Usuario!
+  createVacuna(createInput: CreateVacunaInput!): Vacuna!
+  createVenta(createInput: CreateVentaInput!): Venta!
+  createVeterinarioEspecialidad(createInput: CreateVeterinarioEspecialidadInput!): VeterinarioEspecialidad!
+}
+
+type Paciente {
+  alergias: String
+  cliente: Cliente!
+  cliente_id: Int!
+  color: String!
+  especie: String!
+  fecha_nacimiento: DateTime!
+  genero: String!
+  id_paciente: Int!
+  nombre: String!
+  raza: String!
+}
+
+type Producto {
+  categoria: String!
+  id_producto: Int!
+  nombre: String!
+  precio_compra: Float!
+  precio_venta: Float!
+  proveedor: Proveedor!
+  proveedor_id: Int!
+  stock_actual: Int!
+  stock_minimo: Int!
+}
+
+type Proveedor {
+  contacto_nombre: String!
+  id_proveedor: Int!
+  nombre_empresa: String!
+  telefono: String!
+}
+
+type Query {
+  archivosConsulta: [ArchivoConsulta!]!
+  auditoriasLog: [AuditoriaLog!]!
+  citas: [Cita!]!
+  clientes: [Cliente!]!
+  consultas: [Consulta!]!
+  detallesReceta: [DetalleReceta!]!
+  detallesServicioVenta: [DetalleServicioVenta!]!
+  detallesVenta: [DetalleVenta!]!
+  empleados: [Empleado!]!
+  hospitalizaciones: [Hospitalizacion!]!
+  medicamentos: [Medicamento!]!
+  movimientosInventario: [MovimientoInventario!]!
+  pacientes: [Paciente!]!
+  productos: [Producto!]!
+  proveedores: [Proveedor!]!
+  recetas: [Receta!]!
+  registrosVacunacion: [RegistroVacunacion!]!
+  roles: [Rol!]!
+  servicios: [Servicio!]!
+  usuarios: [Usuario!]!
+  vacunas: [Vacuna!]!
+  ventas: [Venta!]!
+  veterinarioEspecialidades: [VeterinarioEspecialidad!]!
+}
+
+type Receta {
+  consulta: Consulta!
+  consulta_id: Int!
+  fecha_emision: DateTime!
+  id_receta: Int!
+  observaciones_generales: String
+}
+
+type RegistroVacunacion {
+  fecha_aplicacion: DateTime!
+  id_registro_vac: Int!
+  paciente: Paciente!
+  paciente_id: Int!
+  proxima_dosis: DateTime
+  vacuna: Vacuna!
+  vacuna_id: Int!
+}
+
+type Rol {
+  descripcion: String
+  id_rol: Int!
+  nombre: String!
+  usuarios: [Usuario!]
+}
+
+type Servicio {
+  costo_base: Float!
+  id_servicio: Int!
+  nombre_servicio: String!
+}
+
+type Usuario {
+  activo: Boolean!
+  created_at: DateTime!
+  id_usuario: Int!
+  password_hash: String!
+  rol: Rol!
+  rol_id: Int!
+  username: String!
+}
+
+type Vacuna {
+  descripcion: String
+  id_vacuna: Int!
+  nombre_vacuna: String!
+}
+
+type Venta {
+  cliente: Cliente!
+  cliente_id: Int!
+  empleado: Empleado!
+  empleado_id: Int!
+  fecha_venta: DateTime!
+  id_venta: Int!
+  metodo_pago: String!
+  total: Float!
+}
+
+type VeterinarioEspecialidad {
+  empleado: Empleado!
+  empleado_id: Int!
+  especialidad: String!
+  id_vet_esp: Int!
+}
