@@ -19,12 +19,12 @@ export class Venta {
     @JoinColumn({ name: 'cliente_id' })
     cliente: Cliente;
 
-    @Field(() => Int)
-    @Column()
+    @Field(() => Int, { nullable: true })
+    @Column({ nullable: true })
     empleado_id: number;
 
-    @Field(() => Empleado)
-    @ManyToOne(() => Empleado)
+    @Field(() => Empleado, { nullable: true })
+    @ManyToOne(() => Empleado, { nullable: true })
     @JoinColumn({ name: 'empleado_id' })
     empleado: Empleado;
 

@@ -345,6 +345,8 @@ type Mutation {
   createVacuna(createInput: CreateVacunaInput!): Vacuna!
   createVenta(createInput: CreateVentaInput!): Venta!
   createVeterinarioEspecialidad(createInput: CreateVeterinarioEspecialidadInput!): VeterinarioEspecialidad!
+  removePaciente(id: Int!): Boolean!
+  updatePaciente(updatePacienteInput: UpdatePacienteInput!): Paciente!
 }
 
 type Paciente {
@@ -440,6 +442,18 @@ type Servicio {
   nombre_servicio: String!
 }
 
+input UpdatePacienteInput {
+  alergias: String
+  cliente_id: Int
+  color: String
+  especie: String
+  fecha_nacimiento: DateTime
+  genero: String
+  id_paciente: Int!
+  nombre: String
+  raza: String
+}
+
 type Usuario {
   activo: Boolean!
   created_at: DateTime!
@@ -459,8 +473,8 @@ type Vacuna {
 type Venta {
   cliente: Cliente!
   cliente_id: Int!
-  empleado: Empleado!
-  empleado_id: Int!
+  empleado: Empleado
+  empleado_id: Int
   estado_pedido: String!
   fecha_venta: DateTime!
   hora_recogida_estimada: DateTime

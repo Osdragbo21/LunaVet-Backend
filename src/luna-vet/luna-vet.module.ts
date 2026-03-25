@@ -147,10 +147,6 @@ import { DashboardResolver } from './resolvers/dashboard/dashboard.resolver';
       DetalleVenta, 
       Servicio, 
       DetalleServicioVenta,
-
-      // 7. Dashboard
-      DashboardService, 
-      DashboardResolver
     ])
   ],
   providers: [

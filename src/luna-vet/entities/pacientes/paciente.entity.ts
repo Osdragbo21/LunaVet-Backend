@@ -32,7 +32,13 @@ export class Paciente {
     raza: string;
 
     @Field()
-    @Column({ type: 'date' })
+    @Column({ 
+        type: 'date',
+        transformer: {
+        to: (value: Date) => value, // Lo que se guarda en la BD
+        from: (value: string) => new Date(value) // Lo que sale de la BD hacia GraphQL
+        }
+    })
     fecha_nacimiento: Date;
 
     @Field()
