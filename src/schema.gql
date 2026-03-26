@@ -345,7 +345,9 @@ type Mutation {
   createVacuna(createInput: CreateVacunaInput!): Vacuna!
   createVenta(createInput: CreateVentaInput!): Venta!
   createVeterinarioEspecialidad(createInput: CreateVeterinarioEspecialidadInput!): VeterinarioEspecialidad!
+  registerNewCliente(input: RegisterClienteInput!): Cliente!
   removePaciente(id: Int!): Boolean!
+  toggleEstadoUsuario(activo: Boolean!, id_usuario: Int!): Usuario!
   updatePaciente(updatePacienteInput: UpdatePacienteInput!): Paciente!
 }
 
@@ -417,6 +419,14 @@ type Receta {
   fecha_emision: DateTime!
   id_receta: Int!
   observaciones_generales: String
+}
+
+input RegisterClienteInput {
+  direccion: String!
+  nombre_completo: String!
+  password_hash: String!
+  telefono_principal: String!
+  username: String!
 }
 
 type RegistroVacunacion {

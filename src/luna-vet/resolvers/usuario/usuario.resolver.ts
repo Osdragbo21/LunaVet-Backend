@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { Usuario } from '../../entities/usuarios/usuario.entity';
 import { UsuarioService } from '../../services/usuario/usuario.service';
 import { CreateUsuarioInput } from '../../dtos/usuario/create-usuario.input';
@@ -15,5 +15,14 @@ export class UsuarioResolver {
     @Mutation(() => Usuario)
     createUsuario(@Args('createUsuarioInput') createUsuarioInput: CreateUsuarioInput) {
         return this.usuarioService.create(createUsuarioInput);
+    }
+
+    // NUEVA MUTACIÓN: Suspender/Activar Usuario
+    @Mutation(() => Usuario)
+    toggleEstadoUsuario(
+        @Args('id_usuario', { type: () => Int }) id_usuario: number,
+        @Args('activo', { type: () => Boolean }) activo: boolean,
+    ) {
+        return this.usuarioService.toggleEstado(id_usuario, activo);
     }
 }

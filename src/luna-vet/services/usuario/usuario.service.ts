@@ -20,4 +20,16 @@ export class UsuarioService {
         const newUsuario = this.usuarioRepository.create(createUsuarioInput);
         return this.usuarioRepository.save(newUsuario);
     }
+
+    // NUEVO MÉTODO: Suspender o Activar un usuario
+    async toggleEstado(id_usuario: number, activo: boolean): Promise<Usuario> {
+        const usuario = await this.usuarioRepository.findOne({ where: { id_usuario } });
+        
+        if (!usuario) {
+        throw new Error(`Usuario con ID ${id_usuario} no encontrado`);
+        }
+
+        usuario.activo = activo;
+        return this.usuarioRepository.save(usuario);
+    }
 }
