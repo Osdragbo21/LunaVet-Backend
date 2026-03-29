@@ -15,9 +15,8 @@ export class Paciente {
   @Column()
   cliente_id: number;
 
-  // Relación: Muchos pacientes pertenecen a un cliente
   @Field(() => Cliente)
-  @ManyToOne(() => Cliente, (cliente) => cliente.pacientes)
+  @ManyToOne(() => Cliente)
   @JoinColumn({ name: 'cliente_id' })
   cliente: Cliente;
 
@@ -27,14 +26,26 @@ export class Paciente {
 
   @Field()
   @Column()
-  especie: string; // Ej: Perro, Gato
+  especie: string;
 
   @Field()
   @Column()
   raza: string;
 
+  // Transformador robusto a prueba de zonas horarias para GraphQL
   @Field()
-  @Column({ type: 'date' })
+  @Column({ 
+    type: 'date',
+    transformer: {
+      to: (value: any) => value, // Guarda como Date (TypeORM lo pasa a SQL)
+      from: (value: any) => {
+        if (!value) return null;
+        if (value instanceof Date) return value;
+        // Agregamos mediodía UTC (T12:00:00Z) para evitar que la zona horaria retrase la fecha un día
+        return new Date(typeof value === 'string' && value.length === 10 ? `${value}T12:00:00Z` : value);
+      }
+    }
+  })
   fecha_nacimiento: Date;
 
   @Field()
