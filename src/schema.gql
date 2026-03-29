@@ -348,6 +348,7 @@ type Mutation {
   registerNewCliente(input: RegisterClienteInput!): Cliente!
   removePaciente(id: Int!): Boolean!
   toggleEstadoUsuario(activo: Boolean!, id_usuario: Int!): Usuario!
+  updateEstadoCita(id: Int!, nuevoEstado: String!): Cita!
   updatePaciente(updatePacienteInput: UpdatePacienteInput!): Paciente!
 }
 
