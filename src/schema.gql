@@ -354,12 +354,14 @@ type Mutation {
 
 type Paciente {
   alergias: String
+  citas: [Cita!]
   cliente: Cliente!
   cliente_id: Int!
   color: String!
   especie: String!
   fecha_nacimiento: DateTime!
   genero: String!
+  hospitalizaciones: [Hospitalizacion!]
   id_paciente: Int!
   nombre: String!
   raza: String!
@@ -401,6 +403,7 @@ type Query {
   hospitalizaciones: [Hospitalizacion!]!
   medicamentos: [Medicamento!]!
   movimientosInventario: [MovimientoInventario!]!
+  paciente(id: Int!): Paciente!
   pacientes: [Paciente!]!
   productos: [Producto!]!
   proveedores: [Proveedor!]!

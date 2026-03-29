@@ -6,25 +6,33 @@ import { UpdatePacienteInput } from '../../dtos/paciente/update-paciente.input';
 
 @Resolver(() => Paciente)
 export class PacienteResolver {
-    constructor(private readonly pacienteService: PacienteService) {}
+  constructor(private readonly pacienteService: PacienteService) {}
 
-    @Query(() => [Paciente], { name: 'pacientes' })
-    findAll() {
-        return this.pacienteService.findAll();
-    }
+  @Query(() => [Paciente], { name: 'pacientes' })
+  findAll() {
+    return this.pacienteService.findAll();
+  }
 
-    @Mutation(() => Paciente)
-    createPaciente(@Args('createPacienteInput') createPacienteInput: CreatePacienteInput) {
-        return this.pacienteService.create(createPacienteInput);
-    }
+  // =================================================================
+  // NUEVA QUERY: Obtiene un paciente por ID para el Expediente Médico
+  // =================================================================
+  @Query(() => Paciente, { name: 'paciente' })
+  findOne(@Args('id', { type: () => Int }) id: number) {
+    return this.pacienteService.findOne(id);
+  }
 
-    @Mutation(() => Paciente)
-    updatePaciente(@Args('updatePacienteInput') updatePacienteInput: UpdatePacienteInput) {
-        return this.pacienteService.update(updatePacienteInput.id_paciente, updatePacienteInput);
-    }
+  @Mutation(() => Paciente)
+  createPaciente(@Args('createPacienteInput') createPacienteInput: CreatePacienteInput) {
+    return this.pacienteService.create(createPacienteInput);
+  }
 
-    @Mutation(() => Boolean)
-    removePaciente(@Args('id', { type: () => Int }) id: number) {
-        return this.pacienteService.remove(id);
-    }
+  @Mutation(() => Paciente)
+  updatePaciente(@Args('updatePacienteInput') updatePacienteInput: UpdatePacienteInput) {
+    return this.pacienteService.update(updatePacienteInput.id_paciente, updatePacienteInput);
+  }
+
+  @Mutation(() => Boolean)
+  removePaciente(@Args('id', { type: () => Int }) id: number) {
+    return this.pacienteService.remove(id);
+  }
 }
