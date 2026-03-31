@@ -302,6 +302,16 @@ type Hospitalizacion {
   paciente_id: Int!
 }
 
+input LoginInput {
+  password_hash: String!
+  username: String!
+}
+
+type LoginResponse {
+  access_token: String!
+  usuario: Usuario!
+}
+
 type Medicamento {
   id_medicamento: Int!
   nombre: String!
@@ -345,6 +355,7 @@ type Mutation {
   createVacuna(createInput: CreateVacunaInput!): Vacuna!
   createVenta(createInput: CreateVentaInput!): Venta!
   createVeterinarioEspecialidad(createInput: CreateVeterinarioEspecialidadInput!): VeterinarioEspecialidad!
+  login(loginInput: LoginInput!): LoginResponse!
   registerNewCliente(input: RegisterClienteInput!): Cliente!
   removePaciente(id: Int!): Boolean!
   toggleEstadoUsuario(activo: Boolean!, id_usuario: Int!): Usuario!

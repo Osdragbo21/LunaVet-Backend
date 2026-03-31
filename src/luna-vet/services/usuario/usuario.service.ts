@@ -3,33 +3,60 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Usuario } from '../../entities/usuarios/usuario.entity';
 import { CreateUsuarioInput } from '../../dtos/usuario/create-usuario.input';
+import { LoginInput } from '../../dtos/usuario/login.input';
+import { LoginResponse } from '../../dtos/usuario/login.response';
 
 @Injectable()
 export class UsuarioService {
-    constructor(
-        @InjectRepository(Usuario)
-        private usuarioRepository: Repository<Usuario>,
-    ) {}
+  constructor(
+    @InjectRepository(Usuario)
+    private usuarioRepository: Repository<Usuario>,
+  ) {}
 
-    findAll(): Promise<Usuario[]> {
-        return this.usuarioRepository.find({ relations: ['rol'] });
+  findAll(): Promise<Usuario[]> {
+    return this.usuarioRepository.find({ relations: ['rol'] });
+  }
+
+  create(createUsuarioInput: CreateUsuarioInput): Promise<Usuario> {
+    const newUsuario = this.usuarioRepository.create(createUsuarioInput);
+    return this.usuarioRepository.save(newUsuario);
+  }
+
+  async toggleEstado(id_usuario: number, activo: boolean): Promise<Usuario> {
+    const usuario = await this.usuarioRepository.findOne({ where: { id_usuario } });
+    if (!usuario) throw new Error(`Usuario con ID ${id_usuario} no encontrado`);
+    
+    usuario.activo = activo;
+    return this.usuarioRepository.save(usuario);
+  }
+
+  // ==========================================
+  // NUEVO MÉTODO: Autenticación (Login)
+  // ==========================================
+  async login(input: LoginInput): Promise<LoginResponse> {
+    // 1. Buscamos al usuario por su username e incluimos su Rol
+    const usuario = await this.usuarioRepository.findOne({
+      where: { username: input.username, activo: true },
+      relations: ['rol']
+    });
+
+    // 2. Si no existe o está suspendido
+    if (!usuario) {
+      throw new Error('Credenciales incorrectas o cuenta suspendida.');
     }
 
-    create(createUsuarioInput: CreateUsuarioInput): Promise<Usuario> {
-        // Nota: Aquí en el futuro encriptaremos la contraseña con bcrypt antes de guardar
-        const newUsuario = this.usuarioRepository.create(createUsuarioInput);
-        return this.usuarioRepository.save(newUsuario);
+    // 3. Verificamos la contraseña
+    if (usuario.password_hash !== input.password_hash) {
+      throw new Error('Credenciales incorrectas.');
     }
 
-    // NUEVO MÉTODO: Suspender o Activar un usuario
-    async toggleEstado(id_usuario: number, activo: boolean): Promise<Usuario> {
-        const usuario = await this.usuarioRepository.findOne({ where: { id_usuario } });
-        
-        if (!usuario) {
-        throw new Error(`Usuario con ID ${id_usuario} no encontrado`);
-        }
+    // 4. Generamos un token básico
+    const tokenPayload = `${usuario.id_usuario}:${usuario.username}:${usuario.rol.nombre}`;
+    const token = Buffer.from(tokenPayload).toString('base64');
 
-        usuario.activo = activo;
-        return this.usuarioRepository.save(usuario);
-    }
+    return {
+      access_token: token,
+      usuario: usuario
+    };
+  }
 }
