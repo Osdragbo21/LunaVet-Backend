@@ -357,6 +357,7 @@ type Mutation {
   createVeterinarioEspecialidad(createInput: CreateVeterinarioEspecialidadInput!): VeterinarioEspecialidad!
   login(loginInput: LoginInput!): LoginResponse!
   registerNewCliente(input: RegisterClienteInput!): Cliente!
+  registerNewEmpleado(input: RegisterEmpleadoInput!): Empleado!
   removePaciente(id: Int!): Boolean!
   toggleEstadoUsuario(activo: Boolean!, id_usuario: Int!): Usuario!
   updateEstadoCita(id: Int!, nuevoEstado: String!): Cita!
@@ -441,6 +442,19 @@ input RegisterClienteInput {
   nombre_completo: String!
   password_hash: String!
   telefono_principal: String!
+  username: String!
+}
+
+input RegisterEmpleadoInput {
+  apellido_materno: String!
+  apellido_paterno: String!
+  email_empleado: String!
+  fecha_contratacion: DateTime!
+  nombre: String!
+  password_hash: String!
+  puesto: String!
+  rol_id: Int!
+  telefono: String!
   username: String!
 }
 
