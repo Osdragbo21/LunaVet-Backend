@@ -17,7 +17,7 @@ export class ProductoService {
     return this.rep.save(this.rep.create(input)); 
   }
 
-  // NUEVO MÉTODO: Actualizar producto (precios, stock, imágenes, etc.)
+  // MÉTODO: Actualizar producto (precios, stock, imágenes, etc.)
   async update(id: number, updateInput: UpdateProductoInput): Promise<Producto> {
     const producto = await this.rep.preload({
       ...updateInput,
@@ -34,5 +34,13 @@ export class ProductoService {
       where: { id_producto: productoActualizado.id_producto },
       relations: ['proveedor']
     });
+  }
+
+  // =========================================================
+  // NUEVO MÉTODO: Eliminar producto por su ID
+  // =========================================================
+  async remove(id: number): Promise<boolean> {
+    const result = await this.rep.delete(id);
+    return (result.affected ?? 0) > 0;
   }
 }

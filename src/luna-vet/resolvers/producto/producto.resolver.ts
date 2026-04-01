@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { Producto } from '../../entities/productos/producto.entity';
 import { ProductoService } from '../../services/producto/producto.service';
 import { CreateProductoInput } from '../../dtos/producto/create-producto.input';
@@ -18,9 +18,17 @@ export class ProductoResolver {
     return this.srv.create(input); 
   }
 
-  // NUEVA MUTACIÓN: Actualiza un producto existente
+  // MUTACIÓN: Actualiza un producto existente
   @Mutation(() => Producto)
   updateProducto(@Args('updateProductoInput') updateProductoInput: UpdateProductoInput) {
     return this.srv.update(updateProductoInput.id_producto, updateProductoInput);
+  }
+
+  // =========================================================
+  // NUEVA MUTACIÓN: Eliminar un producto
+  // =========================================================
+  @Mutation(() => Boolean)
+  removeProducto(@Args('id', { type: () => Int }) id: number) {
+    return this.srv.remove(id);
   }
 }
