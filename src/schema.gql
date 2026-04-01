@@ -360,6 +360,7 @@ type Mutation {
   registerNewEmpleado(input: RegisterEmpleadoInput!): Empleado!
   removePaciente(id: Int!): Boolean!
   toggleEstadoUsuario(activo: Boolean!, id_usuario: Int!): Usuario!
+  updateEmpleado(updateEmpleadoInput: UpdateEmpleadoInput!): Empleado!
   updateEstadoCita(id: Int!, nuevoEstado: String!): Cita!
   updatePaciente(updatePacienteInput: UpdatePacienteInput!): Paciente!
 }
@@ -479,6 +480,18 @@ type Servicio {
   costo_base: Float!
   id_servicio: Int!
   nombre_servicio: String!
+}
+
+input UpdateEmpleadoInput {
+  apellido_materno: String
+  apellido_paterno: String
+  email_empleado: String
+  fecha_contratacion: DateTime
+  id_empleado: Int!
+  nombre: String
+  puesto: String
+  telefono: String
+  usuario_id: Int
 }
 
 input UpdatePacienteInput {

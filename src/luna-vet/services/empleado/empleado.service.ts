@@ -5,6 +5,7 @@ import { Empleado } from '../../entities/empleados/empleado.entity';
 import { Usuario } from '../../entities/usuarios/usuario.entity';
 import { CreateEmpleadoInput } from '../../dtos/empleado/create-empleado.input';
 import { RegisterEmpleadoInput } from '../../dtos/empleado/register-empleado.input';
+import { UpdateEmpleadoInput } from '../../dtos/empleado/update-empleado.input';
 
 @Injectable()
 export class EmpleadoService {
@@ -25,7 +26,7 @@ export class EmpleadoService {
   }
 
   // =========================================================
-  // NUEVO MÉTODO: Registra Usuario y Empleado en un solo paso
+  // MÉTODO: Registra Usuario y Empleado en un solo paso
   // =========================================================
   async registerNewEmpleado(input: RegisterEmpleadoInput): Promise<Empleado> {
     // 1. Crear y guardar credenciales
@@ -54,6 +55,27 @@ export class EmpleadoService {
     return this.empleadoRepository.findOneOrFail({
       where: { id_empleado: empleadoGuardado.id_empleado },
       relations: ['usuario', 'usuario.rol']
+    });
+  }
+
+  // =========================================================
+  // NUEVO MÉTODO: Actualizar datos de un empleado existente
+  // =========================================================
+  async update(id: number, updateInput: UpdateEmpleadoInput): Promise<Empleado> {
+    const empleado = await this.empleadoRepository.preload({
+      ...updateInput,
+      id_empleado: id,
+    } as any);
+
+    if (!empleado) {
+      throw new Error(`Empleado con ID ${id} no encontrado`);
+    }
+
+    const empleadoActualizado = await this.empleadoRepository.save(empleado);
+
+    return this.empleadoRepository.findOneOrFail({
+      where: { id_empleado: empleadoActualizado.id_empleado },
+      relations: ['usuario', 'especialidades']
     });
   }
 }
