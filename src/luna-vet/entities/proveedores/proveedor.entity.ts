@@ -4,19 +4,28 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 @ObjectType()
 @Entity('proveedores')
 export class Proveedor {
-    @Field(() => Int)
-    @PrimaryGeneratedColumn()
-    id_proveedor: number;
+  @Field(() => Int)
+  @PrimaryGeneratedColumn()
+  id_proveedor: number;
 
-    @Field()
-    @Column()
-    nombre_empresa: string;
+  @Field()
+  @Column()
+  nombre_empresa: string;
 
-    @Field()
-    @Column()
-    contacto_nombre: string;
+  @Field()
+  @Column()
+  contacto_nombre: string;
 
-    @Field()
-    @Column()
-    telefono: string;
+  @Field()
+  @Column()
+  telefono: string;
+
+  // NUEVOS CAMPOS SOLICITADOS POR FRONTEND
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  email: string;
+
+  @Field({ nullable: true })
+  @Column({ type: 'text', nullable: true })
+  direccion: string;
 }

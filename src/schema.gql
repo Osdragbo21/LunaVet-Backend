@@ -179,6 +179,8 @@ input CreateProductoInput {
 
 input CreateProveedorInput {
   contacto_nombre: String!
+  direccion: String
+  email: String
   nombre_empresa: String!
   telefono: String!
 }
@@ -360,11 +362,13 @@ type Mutation {
   registerNewEmpleado(input: RegisterEmpleadoInput!): Empleado!
   removePaciente(id: Int!): Boolean!
   removeProducto(id: Int!): Boolean!
+  removeProveedor(id: Int!): Boolean!
   toggleEstadoUsuario(activo: Boolean!, id_usuario: Int!): Usuario!
   updateEmpleado(updateEmpleadoInput: UpdateEmpleadoInput!): Empleado!
   updateEstadoCita(id: Int!, nuevoEstado: String!): Cita!
   updatePaciente(updatePacienteInput: UpdatePacienteInput!): Paciente!
   updateProducto(updateProductoInput: UpdateProductoInput!): Producto!
+  updateProveedor(updateInput: UpdateProveedorInput!): Proveedor!
 }
 
 type Paciente {
@@ -399,6 +403,8 @@ type Producto {
 
 type Proveedor {
   contacto_nombre: String!
+  direccion: String
+  email: String
   id_proveedor: Int!
   nombre_empresa: String!
   telefono: String!
@@ -520,6 +526,15 @@ input UpdateProductoInput {
   proveedor_id: Int
   stock_actual: Int
   stock_minimo: Int
+}
+
+input UpdateProveedorInput {
+  contacto_nombre: String
+  direccion: String
+  email: String
+  id_proveedor: Int!
+  nombre_empresa: String
+  telefono: String
 }
 
 type Usuario {
