@@ -10,21 +10,33 @@ import { CreateVentaInput } from '../../dtos/venta/create-venta.input';
 export class VentaService {
   constructor(
     @InjectRepository(Venta) private rep: Repository<Venta>,
-    private dataSource: DataSource // Inyectamos el DataSource para Transacciones
+    private dataSource: DataSource 
   ) {}
 
+  // =========================================================
+  // MÉTODO ACTUALIZADO PARA EL HISTORIAL DE VENTAS
+  // Ahora trae: cliente, cajero(empleado), los renglones(detalles) 
+  // y el nombre del articulo (detalles.producto)
+  // =========================================================
   findAll(): Promise<Venta[]> { 
-    return this.rep.find({ relations: ['cliente', 'empleado', 'detalles', 'detalles.producto'] }); 
+    return this.rep.find({ 
+      relations: [
+        'cliente', 
+        'empleado', 
+        'detalles', 
+        'detalles.producto' // ¡Crucial para que GraphQL sepa cómo resolver producto { nombre }!
+      ],
+      order: { fecha_venta: 'DESC' } // Ordenamos para que las ventas más recientes salgan primero
+    }); 
   }
 
   // MÉTODO TRANSACCIONAL: Crear Venta POS
   async create(input: CreateVentaInput): Promise<Venta> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
-    await queryRunner.startTransaction(); // Iniciamos la transacción segura
+    await queryRunner.startTransaction();
 
     try {
-      // 1. Crear la cabecera de la Venta
       const nuevaVenta = queryRunner.manager.create(Venta, {
         cliente_id: input.cliente_id,
         empleado_id: input.empleado_id,
@@ -35,10 +47,8 @@ export class VentaService {
       });
       const ventaGuardada = await queryRunner.manager.save(nuevaVenta);
 
-      // 2. Procesar el carrito (Detalles) y descontar Inventario
       for (const detalle of input.detalles) {
         
-        // A) Validar y Descontar Stock
         const producto = await queryRunner.manager.findOne(Producto, { where: { id_producto: detalle.producto_id } });
         
         if (!producto) {
@@ -49,9 +59,8 @@ export class VentaService {
         }
 
         producto.stock_actual -= detalle.cantidad;
-        await queryRunner.manager.save(producto); // Guardamos el nuevo stock
+        await queryRunner.manager.save(producto); 
 
-        // B) Guardar el renglón del ticket (DetalleVenta)
         const nuevoDetalle = queryRunner.manager.create(DetalleVenta, {
           venta_id: ventaGuardada.id_venta,
           producto_id: detalle.producto_id,
@@ -62,21 +71,17 @@ export class VentaService {
         await queryRunner.manager.save(nuevoDetalle);
       }
 
-      // Si todo sale bien, confirmamos (Commit) todos los cambios a la BD
       await queryRunner.commitTransaction();
 
-      // Retornamos la venta completa para que el Frontend la muestre o imprima
       return this.rep.findOneOrFail({ 
         where: { id_venta: ventaGuardada.id_venta },
         relations: ['cliente', 'empleado', 'detalles', 'detalles.producto']
       });
 
     } catch (error) {
-      // Si algo falla (ej. sin stock), revertimos ABSOLUTAMENTE TODO (Rollback)
       await queryRunner.rollbackTransaction();
       throw error;
     } finally {
-      // Liberamos el proceso de la BD
       await queryRunner.release();
     }
   }
