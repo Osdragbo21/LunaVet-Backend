@@ -220,6 +220,7 @@ input CreateVacunaInput {
 
 input CreateVentaInput {
   cliente_id: Int!
+  detalles: [DetalleVentaInputPOS!]!
   empleado_id: Int
   estado_pedido: String
   hora_recogida_estimada: DateTime
@@ -276,6 +277,12 @@ type DetalleVenta {
   subtotal: Float!
   venta: Venta!
   venta_id: Int!
+}
+
+input DetalleVentaInputPOS {
+  cantidad: Int!
+  precio_unitario: Float!
+  producto_id: Int!
 }
 
 type Empleado {
@@ -556,6 +563,7 @@ type Vacuna {
 type Venta {
   cliente: Cliente!
   cliente_id: Int!
+  detalles: [DetalleVenta!]
   empleado: Empleado
   empleado_id: Int
   estado_pedido: String!
