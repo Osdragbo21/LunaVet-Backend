@@ -376,6 +376,7 @@ type Mutation {
   updatePaciente(updatePacienteInput: UpdatePacienteInput!): Paciente!
   updateProducto(updateProductoInput: UpdateProductoInput!): Producto!
   updateProveedor(updateInput: UpdateProveedorInput!): Proveedor!
+  updateVenta(updateInput: UpdateVentaInput!): Venta!
 }
 
 type Paciente {
@@ -542,6 +543,15 @@ input UpdateProveedorInput {
   id_proveedor: Int!
   nombre_empresa: String
   telefono: String
+}
+
+input UpdateVentaInput {
+  estado_pedido: String
+  fecha_venta: DateTime
+  id_venta: Int!
+  metodo_pago: String
+  tipo_venta: String
+  total: Float
 }
 
 type Usuario {

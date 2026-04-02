@@ -5,6 +5,7 @@ import { Venta } from '../../entities/ventas/venta.entity';
 import { DetalleVenta } from '../../entities/detalles-venta/detalle-venta.entity';
 import { Producto } from '../../entities/productos/producto.entity';
 import { CreateVentaInput } from '../../dtos/venta/create-venta.input';
+import { UpdateVentaInput } from '../../dtos/venta/update-venta.input';
 
 @Injectable()
 export class VentaService {
@@ -14,8 +15,8 @@ export class VentaService {
   ) {}
 
   // =========================================================
-  // MÉTODO ACTUALIZADO PARA EL HISTORIAL DE VENTAS
-  // Ahora trae: cliente, cajero(empleado), los renglones(detalles) 
+  // MÉTODO PARA EL HISTORIAL DE VENTAS
+  // Trae: cliente, cajero(empleado), los renglones(detalles) 
   // y el nombre del articulo (detalles.producto)
   // =========================================================
   findAll(): Promise<Venta[]> { 
@@ -24,13 +25,15 @@ export class VentaService {
         'cliente', 
         'empleado', 
         'detalles', 
-        'detalles.producto' // ¡Crucial para que GraphQL sepa cómo resolver producto { nombre }!
+        'detalles.producto'
       ],
-      order: { fecha_venta: 'DESC' } // Ordenamos para que las ventas más recientes salgan primero
+      order: { fecha_venta: 'DESC' }
     }); 
   }
 
+  // =========================================================
   // MÉTODO TRANSACCIONAL: Crear Venta POS
+  // =========================================================
   async create(input: CreateVentaInput): Promise<Venta> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -48,7 +51,6 @@ export class VentaService {
       const ventaGuardada = await queryRunner.manager.save(nuevaVenta);
 
       for (const detalle of input.detalles) {
-        
         const producto = await queryRunner.manager.findOne(Producto, { where: { id_producto: detalle.producto_id } });
         
         if (!producto) {
@@ -84,5 +86,26 @@ export class VentaService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  // =========================================================
+  // MÉTODO: Actualizar Venta (Correcciones administrativas)
+  // =========================================================
+  async update(id: number, updateInput: UpdateVentaInput): Promise<Venta> {
+    const venta = await this.rep.preload({
+      ...updateInput,
+      id_venta: id,
+    } as any);
+
+    if (!venta) {
+      throw new Error(`Venta con ID ${id} no encontrada`);
+    }
+
+    const ventaActualizada = await this.rep.save(venta);
+
+    return this.rep.findOneOrFail({
+      where: { id_venta: ventaActualizada.id_venta },
+      relations: ['cliente', 'empleado', 'detalles', 'detalles.producto']
+    });
   }
 }
