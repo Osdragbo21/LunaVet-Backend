@@ -373,6 +373,7 @@ type Mutation {
   toggleEstadoUsuario(activo: Boolean!, id_usuario: Int!): Usuario!
   updateEmpleado(updateEmpleadoInput: UpdateEmpleadoInput!): Empleado!
   updateEstadoCita(id: Int!, nuevoEstado: String!): Cita!
+  updateHospitalizacion(updateInput: UpdateHospitalizacionInput!): Hospitalizacion!
   updatePaciente(updatePacienteInput: UpdatePacienteInput!): Paciente!
   updateProducto(updateProductoInput: UpdateProductoInput!): Producto!
   updateProveedor(updateInput: UpdateProveedorInput!): Proveedor!
@@ -508,6 +509,12 @@ input UpdateEmpleadoInput {
   puesto: String
   telefono: String
   usuario_id: Int
+}
+
+input UpdateHospitalizacionInput {
+  estado: String
+  fecha_alta: DateTime
+  id_hospitalizacion: Int!
 }
 
 input UpdatePacienteInput {
