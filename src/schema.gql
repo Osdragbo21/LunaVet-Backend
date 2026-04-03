@@ -382,6 +382,7 @@ type Mutation {
   removePaciente(id: Int!): Boolean!
   removeProducto(id: Int!): Boolean!
   removeProveedor(id: Int!): Boolean!
+  removeVacuna(id: Int!): Boolean!
   toggleEstadoUsuario(activo: Boolean!, id_usuario: Int!): Usuario!
   updateEmpleado(updateEmpleadoInput: UpdateEmpleadoInput!): Empleado!
   updateEstadoCita(id: Int!, nuevoEstado: String!): Cita!
@@ -390,6 +391,7 @@ type Mutation {
   updatePaciente(updatePacienteInput: UpdatePacienteInput!): Paciente!
   updateProducto(updateProductoInput: UpdateProductoInput!): Producto!
   updateProveedor(updateInput: UpdateProveedorInput!): Proveedor!
+  updateVacuna(updateInput: UpdateVacunaInput!): Vacuna!
   updateVenta(updateInput: UpdateVentaInput!): Venta!
 }
 
@@ -574,6 +576,12 @@ input UpdateProveedorInput {
   id_proveedor: Int!
   nombre_empresa: String
   telefono: String
+}
+
+input UpdateVacunaInput {
+  descripcion: String
+  id_vacuna: Int!
+  nombre_vacuna: String
 }
 
 input UpdateVentaInput {

@@ -3,6 +3,16 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 't
 import { Paciente } from '../pacientes/paciente.entity';
 import { Vacuna } from '../vacunas/vacuna.entity';
 
+// Transformador reutilizable para evitar el choque entre string de Postgres y Date de GraphQL
+const dateTransformer = {
+  to: (value: any) => value,
+  from: (value: any) => {
+    if (!value) return null;
+    if (value instanceof Date) return value;
+    return new Date(typeof value === 'string' && value.length === 10 ? `${value}T12:00:00Z` : value);
+  }
+};
+
 @ObjectType()
 @Entity('registro_vacunacion')
 export class RegistroVacunacion {
@@ -28,18 +38,24 @@ export class RegistroVacunacion {
   @JoinColumn({ name: 'vacuna_id' })
   vacuna: Vacuna;
 
+  // ==========================================
+  // APLICAMOS TRANSFORMADOR DE FECHAS
+  // ==========================================
   @Field()
-  @Column({ type: 'date' })
+  @Column({ 
+    type: 'date',
+    transformer: dateTransformer
+  })
   fecha_aplicacion: Date;
 
   @Field({ nullable: true })
-  @Column({ type: 'date', nullable: true })
+  @Column({ 
+    type: 'date', 
+    nullable: true,
+    transformer: dateTransformer
+  })
   proxima_dosis: Date;
 
-  // ==========================================
-  // NUEVO CAMPO SOLICITADO: Peso al vacunar
-  // Lo hacemos nullable en BD para no romper registros antiguos (seed)
-  // ==========================================
   @Field(() => Float, { nullable: true })
   @Column({ type: 'float', nullable: true })
   peso_al_vacunar: number;
