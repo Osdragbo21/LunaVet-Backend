@@ -143,6 +143,7 @@ input CreateMedicamentoInput {
   nombre: String!
   presentacion: String!
   principio_activo: String!
+  stock_farmacia: Int!
 }
 
 input CreateMovimientoInventarioInput {
@@ -326,6 +327,7 @@ type Medicamento {
   nombre: String!
   presentacion: String!
   principio_activo: String!
+  stock_farmacia: Int!
 }
 
 type MovimientoInventario {
@@ -524,6 +526,7 @@ input UpdateMedicamentoInput {
   nombre: String
   presentacion: String
   principio_activo: String
+  stock_farmacia: Int
 }
 
 input UpdatePacienteInput {

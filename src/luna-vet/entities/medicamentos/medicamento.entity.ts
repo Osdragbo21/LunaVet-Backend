@@ -4,19 +4,24 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 @ObjectType()
 @Entity('medicamentos')
 export class Medicamento {
-    @Field(() => Int)
-    @PrimaryGeneratedColumn()
-    id_medicamento: number;
+  @Field(() => Int)
+  @PrimaryGeneratedColumn()
+  id_medicamento: number;
 
-    @Field()
-    @Column()
-    nombre: string;
+  @Field()
+  @Column()
+  nombre: string;
 
-    @Field()
-    @Column()
-    principio_activo: string;
+  @Field()
+  @Column()
+  principio_activo: string;
 
-    @Field()
-    @Column()
-    presentacion: string;
+  @Field()
+  @Column()
+  presentacion: string;
+
+  // NUEVO CAMPO DE INVENTARIO
+  @Field(() => Int, { defaultValue: 0 })
+  @Column({ default: 0 })
+  stock_farmacia: number;
 }
