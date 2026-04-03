@@ -367,6 +367,7 @@ type Mutation {
   login(loginInput: LoginInput!): LoginResponse!
   registerNewCliente(input: RegisterClienteInput!): Cliente!
   registerNewEmpleado(input: RegisterEmpleadoInput!): Empleado!
+  removeMedicamento(id: Int!): Boolean!
   removePaciente(id: Int!): Boolean!
   removeProducto(id: Int!): Boolean!
   removeProveedor(id: Int!): Boolean!
@@ -374,6 +375,7 @@ type Mutation {
   updateEmpleado(updateEmpleadoInput: UpdateEmpleadoInput!): Empleado!
   updateEstadoCita(id: Int!, nuevoEstado: String!): Cita!
   updateHospitalizacion(updateInput: UpdateHospitalizacionInput!): Hospitalizacion!
+  updateMedicamento(updateInput: UpdateMedicamentoInput!): Medicamento!
   updatePaciente(updatePacienteInput: UpdatePacienteInput!): Paciente!
   updateProducto(updateProductoInput: UpdateProductoInput!): Producto!
   updateProveedor(updateInput: UpdateProveedorInput!): Proveedor!
@@ -515,6 +517,13 @@ input UpdateHospitalizacionInput {
   estado: String
   fecha_alta: DateTime
   id_hospitalizacion: Int!
+}
+
+input UpdateMedicamentoInput {
+  id_medicamento: Int!
+  nombre: String
+  presentacion: String
+  principio_activo: String
 }
 
 input UpdatePacienteInput {
