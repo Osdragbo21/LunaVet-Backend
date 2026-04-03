@@ -195,6 +195,7 @@ input CreateRecetaInput {
 input CreateRegistroVacunacionInput {
   fecha_aplicacion: DateTime!
   paciente_id: Int!
+  peso_al_vacunar: Float!
   proxima_dosis: DateTime
   vacuna_id: Int!
 }
@@ -442,6 +443,7 @@ type Query {
   detallesVenta: [DetalleVenta!]!
   empleados: [Empleado!]!
   getAdminDashboardMetrics: DashboardMetrics!
+  getCartillaPaciente(paciente_id: Int!): [RegistroVacunacion!]!
   hospitalizaciones: [Hospitalizacion!]!
   medicamentos: [Medicamento!]!
   movimientosInventario: [MovimientoInventario!]!
@@ -494,6 +496,7 @@ type RegistroVacunacion {
   id_registro_vac: Int!
   paciente: Paciente!
   paciente_id: Int!
+  peso_al_vacunar: Float
   proxima_dosis: DateTime
   vacuna: Vacuna!
   vacuna_id: Int!
