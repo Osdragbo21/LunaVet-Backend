@@ -188,6 +188,7 @@ input CreateProveedorInput {
 
 input CreateRecetaInput {
   consulta_id: Int!
+  detalles: [DetalleRecetaInput!]!
   observaciones_generales: String
 }
 
@@ -258,6 +259,13 @@ type DetalleReceta {
   medicamento_id: Int!
   receta: Receta!
   receta_id: Int!
+}
+
+input DetalleRecetaInput {
+  dosis: String!
+  duracion_dias: Int!
+  frecuencia: String!
+  medicamento_id: Int!
 }
 
 type DetalleServicioVenta {
@@ -454,6 +462,7 @@ type Query {
 type Receta {
   consulta: Consulta!
   consulta_id: Int!
+  detalles: [DetalleReceta!]
   fecha_emision: DateTime!
   id_receta: Int!
   observaciones_generales: String
