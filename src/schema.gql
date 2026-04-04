@@ -7,6 +7,7 @@ type ArchivoConsulta {
   consulta_id: Int!
   fecha_subida: DateTime!
   id_archivo: Int!
+  nombre_archivo: String
   tipo_documento: String!
   url_archivo: String!
 }
@@ -62,6 +63,7 @@ type Consulta {
 
 input CreateArchivoConsultaInput {
   consulta_id: Int!
+  nombre_archivo: String!
   tipo_documento: String!
   url_archivo: String!
 }
