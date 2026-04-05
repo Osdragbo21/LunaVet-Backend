@@ -27,6 +27,7 @@ export class PacienteService {
         'cliente', 
         'citas', 
         'citas.consulta', 
+        'citas.consulta.archivos',
         'hospitalizaciones'
       ]
     });

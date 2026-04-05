@@ -3,6 +3,7 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDa
 import { Cliente } from '../clientes/cliente.entity';
 import { Empleado } from '../empleados/empleado.entity';
 import { DetalleVenta } from '../detalles-venta/detalle-venta.entity';
+import { DetalleServicioVenta } from '../detalles-servicios-venta/detalle-servicio-venta.entity';
 
 @ObjectType()
 @Entity('ventas')
@@ -20,7 +21,6 @@ export class Venta {
   @JoinColumn({ name: 'cliente_id' })
   cliente: Cliente;
 
-  // Ahora es nullable, porque un pedido online no tiene empleado asignado al inicio
   @Field(() => Int, { nullable: true })
   @Column({ nullable: true })
   empleado_id: number;
@@ -42,25 +42,23 @@ export class Venta {
   @Column()
   metodo_pago: string;
 
-  // ==========================================
-  // NUEVOS CAMPOS (PEDIDOS ONLINE)
-  // ==========================================
   @Field({ defaultValue: 'Fisica' })
   @Column({ default: 'Fisica' })
-  tipo_venta: string; // 'Fisica' o 'Online'
+  tipo_venta: string;
 
   @Field({ defaultValue: 'Completado' })
   @Column({ default: 'Completado' })
-  estado_pedido: string; // 'Completado', 'Pendiente de pago', 'Preparando', 'Listo para recoger', 'Entregado'
+  estado_pedido: string;
 
   @Field({ nullable: true })
   @Column({ type: 'timestamp', nullable: true })
   hora_recogida_estimada: Date;
 
-  // ==========================================
-  // NUEVA RELACIÓN: DETALLES DEL TICKET
-  // ==========================================
   @Field(() => [DetalleVenta], { nullable: true })
   @OneToMany(() => DetalleVenta, detalle => detalle.venta)
   detalles: DetalleVenta[];
+
+  @Field(() => [DetalleServicioVenta], { nullable: true })
+  @OneToMany(() => DetalleServicioVenta, detalle => detalle.venta)
+  detalles_servicios: DetalleServicioVenta[];
 }

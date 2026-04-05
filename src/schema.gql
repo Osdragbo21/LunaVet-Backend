@@ -209,6 +209,7 @@ input CreateRolInput {
 
 input CreateServicioInput {
   costo_base: Float!
+  descripcion: String
   nombre_servicio: String!
 }
 
@@ -225,7 +226,8 @@ input CreateVacunaInput {
 
 input CreateVentaInput {
   cliente_id: Int!
-  detalles: [DetalleVentaInputPOS!]!
+  detalles_productos: [DetalleVentaInputPOS!]
+  detalles_servicios: [DetalleServicioInputPOS!]
   empleado_id: Int
   estado_pedido: String
   hora_recogida_estimada: DateTime
@@ -269,6 +271,11 @@ input DetalleRecetaInput {
   duracion_dias: Int!
   frecuencia: String!
   medicamento_id: Int!
+}
+
+input DetalleServicioInputPOS {
+  costo_aplicado: Float!
+  servicio_id: Int!
 }
 
 type DetalleServicioVenta {
@@ -384,6 +391,7 @@ type Mutation {
   removePaciente(id: Int!): Boolean!
   removeProducto(id: Int!): Boolean!
   removeProveedor(id: Int!): Boolean!
+  removeServicio(id: Int!): Boolean!
   removeVacuna(id: Int!): Boolean!
   toggleEstadoUsuario(activo: Boolean!, id_usuario: Int!): Usuario!
   updateEmpleado(updateEmpleadoInput: UpdateEmpleadoInput!): Empleado!
@@ -393,6 +401,7 @@ type Mutation {
   updatePaciente(updatePacienteInput: UpdatePacienteInput!): Paciente!
   updateProducto(updateProductoInput: UpdateProductoInput!): Producto!
   updateProveedor(updateInput: UpdateProveedorInput!): Proveedor!
+  updateServicio(updateInput: UpdateServicioInput!): Servicio!
   updateVacuna(updateInput: UpdateVacunaInput!): Vacuna!
   updateVenta(updateInput: UpdateVentaInput!): Venta!
 }
@@ -515,6 +524,7 @@ type Rol {
 
 type Servicio {
   costo_base: Float!
+  descripcion: String
   id_servicio: Int!
   nombre_servicio: String!
 }
@@ -580,6 +590,13 @@ input UpdateProveedorInput {
   telefono: String
 }
 
+input UpdateServicioInput {
+  costo_base: Float
+  descripcion: String
+  id_servicio: Int!
+  nombre_servicio: String
+}
+
 input UpdateVacunaInput {
   descripcion: String
   id_vacuna: Int!
@@ -615,6 +632,7 @@ type Venta {
   cliente: Cliente!
   cliente_id: Int!
   detalles: [DetalleVenta!]
+  detalles_servicios: [DetalleServicioVenta!]
   empleado: Empleado
   empleado_id: Int
   estado_pedido: String!
