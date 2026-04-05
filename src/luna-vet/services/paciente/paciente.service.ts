@@ -8,20 +8,16 @@ import { UpdatePacienteInput } from '../../dtos/paciente/update-paciente.input';
 @Injectable()
 export class PacienteService {
   constructor(
-    @InjectRepository(Paciente) 
-    private readonly rep: Repository<Paciente>,
+    @InjectRepository(Paciente)
+    private pacienteRepository: Repository<Paciente>,
   ) {}
 
-  // Consulta todos los pacientes e incluye la relación con su dueño (Cliente)
-  findAll(): Promise<Paciente[]> { 
-    return this.rep.find({ relations: ['cliente'] }); 
+  findAll(): Promise<Paciente[]> {
+    return this.pacienteRepository.find({ relations: ['cliente'] });
   }
 
-  // =================================================================
-  // NUEVO MÉTODO: Consulta un paciente por ID con TODO su expediente
-  // =================================================================
   findOne(id: number): Promise<Paciente> {
-    return this.rep.findOneOrFail({
+    return this.pacienteRepository.findOneOrFail({
       where: { id_paciente: id },
       relations: [
         'cliente', 
@@ -33,20 +29,17 @@ export class PacienteService {
     });
   }
 
-  // Crea un paciente y retorna el objeto completo con la relación resuelta
-  async create(input: CreatePacienteInput): Promise<Paciente> {
-    const nuevoPaciente = this.rep.create(input);
-    const pacienteGuardado = await this.rep.save(nuevoPaciente);
-
-    return this.rep.findOneOrFail({
-      where: { id_paciente: pacienteGuardado.id_paciente },
-      relations: ['cliente']
-    });
+  create(createInput: CreatePacienteInput): Promise<Paciente> {
+    const newRecord = this.pacienteRepository.create(createInput);
+    return this.pacienteRepository.save(newRecord);
   }
 
-  // Actualiza un paciente existente y retorna el objeto actualizado
+  // =========================================================
+  // FIX: Usar preload() y save() en lugar de update() para
+  // garantizar que el Suscriptor de Auditoría detecte el evento
+  // =========================================================
   async update(id: number, updateInput: UpdatePacienteInput): Promise<Paciente> {
-    const paciente = await this.rep.preload({
+    const paciente = await this.pacienteRepository.preload({
       ...updateInput,
       id_paciente: id,
     } as any);
@@ -55,17 +48,25 @@ export class PacienteService {
       throw new Error(`Paciente con ID ${id} no encontrado`);
     }
 
-    const pacienteActualizado = await this.rep.save(paciente);
+    // Al usar save(), TypeORM dispara el evento afterUpdate en el Subscriber
+    const pacienteActualizado = await this.pacienteRepository.save(paciente);
 
-    return this.rep.findOneOrFail({
+    return this.pacienteRepository.findOneOrFail({
       where: { id_paciente: pacienteActualizado.id_paciente },
       relations: ['cliente']
     });
   }
 
-  // Elimina un paciente por su ID
+  // =========================================================
+  // FIX: Usar remove() en lugar de delete() para disparar
+  // el evento afterRemove en el Subscriber
+  // =========================================================
   async remove(id: number): Promise<boolean> {
-    const result = await this.rep.delete(id);
-    return (result.affected ?? 0) > 0;
+    const paciente = await this.pacienteRepository.findOne({ where: { id_paciente: id } as any });
+    if (!paciente) return false;
+    
+    // remove() dispara los triggers, a diferencia de delete()
+    await this.pacienteRepository.remove(paciente);
+    return true;
   }
 }

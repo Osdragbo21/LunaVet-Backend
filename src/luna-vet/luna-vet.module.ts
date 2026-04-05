@@ -110,6 +110,11 @@ import { DetalleServicioVentaResolver } from './resolvers/detalleServicioVenta/d
 import { DashboardService } from './services/dashboard/dashboard.service';
 import { DashboardResolver } from './resolvers/dashboard/dashboard.resolver';
 
+// ==========================================
+// 8. SUSCRIPTORES GLOBALES (TRIGGERS)
+// ==========================================
+import { AuditoriaSubscriber } from './subscribers/auditoria.subscriber';
+
 @Module({
   imports: [
     TypeOrmModule.forFeature([
@@ -187,7 +192,10 @@ import { DashboardResolver } from './resolvers/dashboard/dashboard.resolver';
 
     // 7. Dashboard 
     DashboardService, 
-    DashboardResolver
+    DashboardResolver,
+
+    // 8. Suscriptores Globales (Triggers)
+    AuditoriaSubscriber
   ],
 })
 export class LunaVetModule {}

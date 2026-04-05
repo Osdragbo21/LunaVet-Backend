@@ -6,7 +6,17 @@ import { CreateMovimientoInventarioInput } from '../../dtos/movimientoInventario
 
 @Injectable()
 export class MovimientoInventarioService {
-    constructor(@InjectRepository(MovimientoInventario) private rep: Repository<MovimientoInventario>) {}
-    findAll(): Promise<MovimientoInventario[]> { return this.rep.find({ relations: ['producto', 'empleado'] }); }
-    create(input: CreateMovimientoInventarioInput): Promise<MovimientoInventario> { return this.rep.save(this.rep.create(input)); }
+  constructor(@InjectRepository(MovimientoInventario) private rep: Repository<MovimientoInventario>) {}
+  
+  // ACTUALIZADO: Join profundo para llegar al username y orden descendente
+  findAll(): Promise<MovimientoInventario[]> { 
+    return this.rep.find({ 
+      relations: ['producto', 'empleado', 'empleado.usuario'],
+      order: { fecha: 'DESC' }
+    }); 
+  }
+  
+  create(input: CreateMovimientoInventarioInput): Promise<MovimientoInventario> { 
+    return this.rep.save(this.rep.create(input)); 
+  }
 }

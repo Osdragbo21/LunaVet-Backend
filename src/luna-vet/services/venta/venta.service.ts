@@ -7,6 +7,8 @@ import { DetalleServicioVenta } from '../../entities/detalles-servicios-venta/de
 import { Producto } from '../../entities/productos/producto.entity';
 import { CreateVentaInput } from '../../dtos/venta/create-venta.input';
 import { UpdateVentaInput } from '../../dtos/venta/update-venta.input';
+import { MovimientoInventario } from '../../entities/movimientos-inventario/movimiento-inventario.entity';
+import { AuditoriaLog } from '../../entities/auditorias-log/auditoria-log.entity';
 
 @Injectable()
 export class VentaService {
@@ -17,6 +19,7 @@ export class VentaService {
 
   findAll(): Promise<Venta[]> { 
     return this.rep.find({ 
+      // Añadimos las relaciones de servicios para que GraphQL las resuelva
       relations: [
         'cliente', 
         'empleado', 
@@ -29,6 +32,9 @@ export class VentaService {
     }); 
   }
 
+  // =========================================================
+  // MÉTODO TRANSACCIONAL: Crear Venta POS (Productos + Servicios)
+  // =========================================================
   async create(input: CreateVentaInput): Promise<Venta> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -45,7 +51,7 @@ export class VentaService {
       });
       const ventaGuardada = await queryRunner.manager.save(nuevaVenta);
 
-      // 1. Procesar Productos
+      // 1. Procesar Productos (Si existen)
       if (input.detalles_productos && input.detalles_productos.length > 0) {
         for (const detalle of input.detalles_productos) {
           const producto = await queryRunner.manager.findOne(Producto, { where: { id_producto: detalle.producto_id } });
@@ -63,10 +69,22 @@ export class VentaService {
             subtotal: detalle.cantidad * detalle.precio_unitario
           });
           await queryRunner.manager.save(nuevoDetalle);
+
+          // ==========================================
+          // NUEVO: Registrar Salida en el Kardex
+          // ==========================================
+          const nuevoMovimiento = queryRunner.manager.create(MovimientoInventario, {
+            producto_id: detalle.producto_id,
+            empleado_id: input.empleado_id || 1, // Usamos el cajero, o 1 (Admin) como fallback para online
+            tipo_movimiento: 'Salida',
+            cantidad: detalle.cantidad,
+            motivo: `Venta POS (Ticket #${ventaGuardada.id_venta})`
+          });
+          await queryRunner.manager.save(nuevoMovimiento);
         }
       }
 
-      // 2. Procesar Servicios
+      // 2. Procesar Servicios Médicos/Estéticos (Si existen)
       if (input.detalles_servicios && input.detalles_servicios.length > 0) {
         for (const serv of input.detalles_servicios) {
           const nuevoDetalleServicio = queryRunner.manager.create(DetalleServicioVenta, {
@@ -77,6 +95,17 @@ export class VentaService {
           await queryRunner.manager.save(nuevoDetalleServicio);
         }
       }
+
+      // ==========================================
+      // NUEVO: Registrar acción en el Log de Auditoría
+      // ==========================================
+      const logAuditoria = queryRunner.manager.create(AuditoriaLog, {
+        usuario_id: 1, // Fallback (idealmente viene del JWT de sesión del usuario)
+        accion: 'CREATE',
+        tabla_afectada: 'ventas',
+        detalle: `Nueva venta POS (Ticket #${ventaGuardada.id_venta}) registrada por un total de $${ventaGuardada.total}`
+      });
+      await queryRunner.manager.save(logAuditoria);
 
       await queryRunner.commitTransaction();
 
@@ -93,6 +122,9 @@ export class VentaService {
     }
   }
 
+  // =========================================================
+  // MÉTODO: Actualizar Venta
+  // =========================================================
   async update(id: number, updateInput: UpdateVentaInput): Promise<Venta> {
     const venta = await this.rep.preload({
       ...updateInput,
@@ -101,6 +133,17 @@ export class VentaService {
 
     if (!venta) throw new Error(`Venta con ID ${id} no encontrada`);
     const ventaActualizada = await this.rep.save(venta);
+
+    // ==========================================
+    // NUEVO: Registrar actualización en Auditoría
+    // ==========================================
+    const logAuditoria = this.dataSource.manager.create(AuditoriaLog, {
+      usuario_id: 1,
+      accion: 'UPDATE',
+      tabla_afectada: 'ventas',
+      detalle: `Se actualizó la información de la Venta #${ventaActualizada.id_venta}`
+    });
+    await this.dataSource.manager.save(logAuditoria);
 
     return this.rep.findOneOrFail({
       where: { id_venta: ventaActualizada.id_venta },

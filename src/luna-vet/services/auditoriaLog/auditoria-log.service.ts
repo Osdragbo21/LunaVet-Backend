@@ -6,17 +6,21 @@ import { CreateAuditoriaLogInput } from '../../dtos/auditoriaLog/create-auditori
 
 @Injectable()
 export class AuditoriaLogService {
-    constructor(
-        @InjectRepository(AuditoriaLog)
-        private readonly rep: Repository<AuditoriaLog>,
-    ) {}
+  constructor(
+    @InjectRepository(AuditoriaLog)
+    private readonly rep: Repository<AuditoriaLog>,
+  ) {}
 
-    findAll(): Promise<AuditoriaLog[]> {
-        return this.rep.find({ relations: ['usuario'] });
-    }
+  // ACTUALIZADO: Ordenado del más reciente al más antiguo
+  findAll(): Promise<AuditoriaLog[]> {
+    return this.rep.find({ 
+      relations: ['usuario'],
+      order: { fecha: 'DESC' }
+    });
+  }
 
-    create(input: CreateAuditoriaLogInput): Promise<AuditoriaLog> {
-        const newLog = this.rep.create(input);
-        return this.rep.save(newLog);
-    }
+  create(input: CreateAuditoriaLogInput): Promise<AuditoriaLog> {
+    const newLog = this.rep.create(input);
+    return this.rep.save(newLog);
+  }
 }
