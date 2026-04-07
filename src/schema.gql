@@ -366,7 +366,7 @@ type Mutation {
   createArchivoConsulta(createInput: CreateArchivoConsultaInput!): ArchivoConsulta!
   createAuditoriaLog(createInput: CreateAuditoriaLogInput!): AuditoriaLog!
   createCita(createCitaInput: CreateCitaInput!): Cita!
-  createCliente(createClienteInput: CreateClienteInput!): Cliente!
+  createCliente(createInput: CreateClienteInput!): Cliente!
   createConsulta(createConsultaInput: CreateConsultaInput!): Consulta!
   createDetalleReceta(createInput: CreateDetalleRecetaInput!): DetalleReceta!
   createDetalleServicioVenta(createInput: CreateDetalleServicioVentaInput!): DetalleServicioVenta!
@@ -396,6 +396,7 @@ type Mutation {
   removeServicio(id: Int!): Boolean!
   removeVacuna(id: Int!): Boolean!
   toggleEstadoUsuario(activo: Boolean!, id_usuario: Int!): Usuario!
+  updateCliente(updateClienteInput: UpdateClienteInput!): Cliente!
   updateEmpleado(updateEmpleadoInput: UpdateEmpleadoInput!): Empleado!
   updateEstadoCita(id: Int!, nuevoEstado: String!): Cita!
   updateHospitalizacion(updateInput: UpdateHospitalizacionInput!): Hospitalizacion!
@@ -529,6 +530,14 @@ type Servicio {
   descripcion: String
   id_servicio: Int!
   nombre_servicio: String!
+}
+
+input UpdateClienteInput {
+  correo: String
+  direccion: String
+  id_cliente: Int!
+  nombre_completo: String
+  telefono_principal: String
 }
 
 input UpdateEmpleadoInput {

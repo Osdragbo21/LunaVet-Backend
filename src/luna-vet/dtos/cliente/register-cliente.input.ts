@@ -4,18 +4,18 @@ import { InputType, Field } from '@nestjs/graphql';
 export class RegisterClienteInput {
   // Datos para la tabla Usuarios
     @Field()
-    username: string;
+    username!: string;
 
     @Field()
-    password_hash: string;
+    password_hash!: string;
 
     // Datos para la tabla Clientes
     @Field()
-    nombre_completo: string;
+    nombre_completo!: string;
 
     @Field()
-    telefono_principal: string;
+    telefono_principal!: string;
 
     @Field()
-    direccion: string;
+    direccion!: string;
 }
