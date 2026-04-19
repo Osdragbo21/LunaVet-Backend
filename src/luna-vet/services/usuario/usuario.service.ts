@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Usuario } from '../../entities/usuarios/usuario.entity';
 import { CreateUsuarioInput } from '../../dtos/usuario/create-usuario.input';
+import { UpdateUsuarioInput } from '../../dtos/usuario/update-usuario.input';
 import { LoginInput } from '../../dtos/usuario/login.input';
 import { LoginResponse } from '../../dtos/usuario/login.response';
 
@@ -22,6 +23,22 @@ export class UsuarioService {
     return this.usuarioRepository.save(newUsuario);
   }
 
+  // ==========================================
+  // NUEVO MÉTODO: Actualizar Usuario (Contraseña/Rol)
+  // ==========================================
+  async update(id: number, updateInput: UpdateUsuarioInput): Promise<Usuario> {
+    const usuario = await this.usuarioRepository.preload({
+      ...updateInput,
+      id_usuario: id,
+    } as any);
+
+    if (!usuario) {
+      throw new Error(`Usuario con ID ${id} no encontrado`);
+    }
+
+    return this.usuarioRepository.save(usuario);
+  }
+
   async toggleEstado(id_usuario: number, activo: boolean): Promise<Usuario> {
     const usuario = await this.usuarioRepository.findOne({ where: { id_usuario } });
     if (!usuario) throw new Error(`Usuario con ID ${id_usuario} no encontrado`);
@@ -31,7 +48,7 @@ export class UsuarioService {
   }
 
   // ==========================================
-  // NUEVO MÉTODO: Autenticación (Login)
+  // MÉTODO: Autenticación (Login)
   // ==========================================
   async login(input: LoginInput): Promise<LoginResponse> {
     // 1. Buscamos al usuario por su username e incluimos su Rol

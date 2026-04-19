@@ -17,19 +17,16 @@ import { LunaVetModule } from './luna-vet/luna-vet.module';
     }),
 
     // 2. Configuración de la Base de Datos (PostgreSQL + TypeORM)
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-        host: configService.get<string>('DB_HOST'),
-        port: configService.get<number>('DB_PORT'),
-        username: configService.get<string>('DB_USERNAME'),
-        password: configService.get<string>('DB_PASSWORD'),
-        database: configService.get<string>('DB_NAME'),
-        autoLoadEntities: true,
-        synchronize: true, 
-      }),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      // Intentará leer el .env, si falla, usará los datos duros como respaldo (Fallback)
+      host: process.env.DB_HOST || 'db.utvt.cloud',
+      port: 5432,
+      username: process.env.DB_USERNAME || 'lunavet',
+      password: process.env.DB_PASSWORD || '%7sodwNs7W%B', // <-- ESTO EVITA EL ERROR
+      database: process.env.DB_NAME || 'db_lunavet',
+      autoLoadEntities: true,
+      synchronize: false,
     }),
 
     // 3. Configuración de GraphQL (Enfoque Code-first)
@@ -38,6 +35,7 @@ import { LunaVetModule } from './luna-vet/luna-vet.module';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
       playground: true, 
+      context: ({ req }) => ({ req }), // <-- NUEVO: Pasa el request HTTP al contexto
     }),
 
     // 4. Nuestro módulo principal de la veterinaria
